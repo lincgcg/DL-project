@@ -7,6 +7,7 @@ import torchvision.transforms as transforms
 import torch.nn.functional as F
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import wandb
+import argparse
 
 class Net(nn.Module):
     def __init__(self):
@@ -32,22 +33,29 @@ class Net(nn.Module):
         output = self.fc2(x)
         return output
 
+parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
+parser.add_argument("--lr", type=float, default=0.01,
+                        help="Learning rate")
+
+parser.add_argument("--name", type=str, default="CNN",
+                        help="model name")
+
+args = parser.parse_args()
 
 # 初始化wanda
 wandb.init(
     # set the wandb project where this run will be logged
     project="DL-project",
-    name = "CNN-MNIST",
+    name = args.name,
     # track hyperparameters and run metadata
     config={
-    "Learning Rate": 0.01,
+    "Learning Rate": args.lr,
     "Batch size": 64,
     "model": "CNN"
     }
 )
-
-
+s
 # check if CUDA is available
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -58,7 +66,7 @@ model = Net().to(device)
 criterion = nn.CrossEntropyLoss()
 
 # Specify the optimizer
-optimizer = optim.Adam(model.parameters(), lr=0.01)
+optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
 # Load the MNIST Dataset
 train_dataset = datasets.MNIST(root='./data', train=True, download=True, transform=transforms.ToTensor())
