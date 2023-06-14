@@ -55,7 +55,7 @@ wandb.init(
     "model": "CNN"
     }
 )
-s
+
 # check if CUDA is available
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
