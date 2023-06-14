@@ -32,6 +32,8 @@ class Net(nn.Module):
         output = self.fc2(x)
         return output
 
+
+
 # 初始化wanda
 wandb.init(
     # set the wandb project where this run will be logged
@@ -39,7 +41,7 @@ wandb.init(
     name = "CNN-MNIST",
     # track hyperparameters and run metadata
     config={
-    "Learning Rate": 0.2,
+    "Learning Rate": 0.01,
     "Batch size": 64,
     "model": "CNN"
     }
@@ -92,7 +94,7 @@ for epoch in range(eopch_num):
         optimizer.step()
 
 # Testing the Model
-def check_accuracy(loader, model):
+def check_accuracy(loader, model, istest = False):
     num_correct = 0
     num_samples = 0
     predicted_labels = []
@@ -117,10 +119,16 @@ def check_accuracy(loader, model):
         recall = recall_score(true_labels, predicted_labels, average='macro')
         f1 = f1_score(true_labels, predicted_labels, average='macro')
         
-        wandb.log({"Accuracy": accuracy})
-        wandb.log({"Precision": precision})
-        wandb.log({"Recall": recall})
-        wandb.log({"'F1 Score":  f1})
+        if istest:
+            wandb.log({"Accuracy_Test": accuracy})
+            wandb.log({"Precision_Test": precision})
+            wandb.log({"Recall_Test": recall})
+            wandb.log({"F1_Test":  f1})
+        else :
+            wandb.log({"Accuracy_Train": accuracy})
+            wandb.log({"Precision_Train": precision})
+            wandb.log({"Recall_Train": recall})
+            wandb.log({"F1_Train":  f1})
         # print('Precision: ', precision)
         # print('Recall: ', recall)
         # print('F1 Score: ', f1)
