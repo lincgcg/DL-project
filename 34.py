@@ -1,13 +1,24 @@
 import torch
 from torch import nn
 import numpy as np
-
 import torch.optim as optim
 import torch.utils.data as Data
 from torch.utils.data import DataLoader
-
-
+import wandb
 import time
+
+# 初始化wanda
+wandb.init(
+    # set the wandb project where this run will be logged
+    project="DL-project-3",
+    name = "PoteryModel",
+    # track hyperparameters and run metadata
+    config={
+    "Learning Rate":0.001,
+    "Batch size": 64,
+    "model": "PoteryModel"
+    }
+)
 
 class BasicModule(nn.Module):
     """
@@ -29,7 +40,7 @@ class BasicModule(nn.Module):
         保存训练的模型到指定路径
         '''
         if name is None:
-            prepath = '/Users/cglin/Desktop/output/3/models/' + self.modelName + '_'
+            prepath = '/root/DL-project/models/' + self.modelName + '_'
             name = time.strftime(prepath + '%m%d_%H_%M.pth')
         torch.save(self.state_dict(), name)
         print("保存的模型路径为：", name)
@@ -142,6 +153,7 @@ def train(model,filename, batch_size, lr, epochs, device, pre_model_path=None):
             # trainwriter.add_scalar('Train Loss', train_loss, (epoch * len(dataloader)+ i))
             if i % 15 == 0:
                 print('epoch: {:d}, batch: {:d}, Train Loss: {:.4f}'.format(epoch, i, train_loss))
+                wandb.log({"loss": train_loss})
         scheduler.step(train_loss)
 
     #step5: 迭代结束保存模型
@@ -223,7 +235,7 @@ def generate_acrostic(model, filename, device, start_words_acrostic, max_gen_len
 
 if __name__ == "__main__":
 
-    filename = r'/Users/cglin/Desktop/data/3/tang.npz'
+    filename = r'/root/DL-project/data/tang.npz'
     batch_size = 64
     lr = 0.001
     epochs = 10
