@@ -9,7 +9,7 @@ import gensim
 import numpy as np
 from torch.utils.data import Dataset
 import wandb
-
+import argparse
 
 class BasicModule(nn.Module):
     """
@@ -286,7 +286,7 @@ def train(model, batch_size, lr, epochs, device, trainloader, validateloader):
 
         # 当验证准确度达到83%以上时保存模型
         if train_acc >0.80 and validate_acc > 0.80 :
-            model.save("/Users/cglin/Desktop/output/4/models/save.bin")
+            model.save()
             print("该模型是在第{}个epoch取得80%以上的验证准确率, 准确率为：{:.4f}".format(epoch, validate_acc))
 
 
@@ -351,10 +351,16 @@ if __name__ == "__main__":
     #     }
     # )
     
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
+    parser.add_argument("--lr", type=float, default=0.01,
+                            help="Learning rate")
+    args = parser.parse_args()
+    
     # 模型训练
     batch_size = 128
-    lr = 0.0001
-    epochs = 10
+    lr = args.lr
+    epochs = 50
     embedding_dim = 50
     vocab_size = 57080
     hidden_dim = 256
@@ -396,4 +402,5 @@ if __name__ == "__main__":
     #step4: 测试模型
     text_testacc = test(text_trainedmodel, device, testloader)
     # lstm_testacc = test(lstm_trainedmodel, device, testloader)
+
 
