@@ -1,0 +1,32 @@
+wandb_version: 1
+
+Learning Rate:
+  desc: null
+  value: 0.001
+Batch size:
+  desc: null
+  value: 64
+model:
+  desc: null
+  value: PoteryModel
+_wandb:
+  desc: null
+  value:
+    python_version: 3.10.3
+    cli_version: 0.15.4
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1687081938.016326
+    t:
+      1:
+      - 1
+      - 55
+      3:
+      - 13
+      - 16
+      - 23
+      4: 3.10.3
+      5: 0.15.4
+      8:
+      - 5
