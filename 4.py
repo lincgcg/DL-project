@@ -360,7 +360,7 @@ if __name__ == "__main__":
     # 模型训练
     batch_size = 128
     lr = args.lr
-    epochs = 50
+    epochs = 10
     embedding_dim = 50
     vocab_size = 57080
     hidden_dim = 256
@@ -386,8 +386,8 @@ if __name__ == "__main__":
     testloader = Data.DataLoader(testdata, batch_size, shuffle=False, num_workers=0, collate_fn=mycollate_fn)
 
     #step2: 建立模型
-    # lstmmodel = LSTMModel(embedding_dim, hidden_dim, pre_weight=word2vecs)
-    textcnnmodel = TextCNN(vocab_size, embedding_dim, filters_num=128, filter_size=[1,3,5,7,9], pre_weight=word2vecs)
+    lstmmodel = LSTMModel(embedding_dim, hidden_dim, pre_weight=word2vecs)
+    # textcnnmodel = TextCNN(vocab_size, embedding_dim, filters_num=128, filter_size=[1,3,5,7,9], pre_weight=word2vecs)
 
     # #step3: 设置tensorboard可视化参数
     # visdir = time.strftime('assets/visualize/' + lstmmodel.modelName + '_%m%d_%H_%M')
@@ -396,11 +396,11 @@ if __name__ == "__main__":
     # testwriter = SummaryWriter('{}/{}'.format(visdir, 'Test'))
 
     #step3: 训练模型
-    text_trainedmodel = train(textcnnmodel, batch_size, lr, epochs, device, trainloader, validateloader)
-    # lstm_trainedmodel = train(lstmmodel, batch_size, lr, epochs, device, trainloader, validateloader)
+    # text_trainedmodel = train(textcnnmodel, batch_size, lr, epochs, device, trainloader, validateloader)
+    lstm_trainedmodel = train(lstmmodel, batch_size, lr, epochs, device, trainloader, validateloader)
 
     #step4: 测试模型
-    text_testacc = test(text_trainedmodel, device, testloader)
-    # lstm_testacc = test(lstm_trainedmodel, device, testloader)
+    # text_testacc = test(text_trainedmodel, device, testloader)
+    lstm_testacc = test(lstm_trainedmodel, device, testloader)
 
 
