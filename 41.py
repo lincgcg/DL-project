@@ -51,21 +51,21 @@ class TextCNN(BasicModule):
         self.convs = nn.ModuleList(
             [nn.Conv2d(1, filters_num, (size, embedding_dim)) for size in filter_size])
         self.dropout = nn.Dropout(0.5)
-        # self.fc = nn.Linear(filters_num * len(filter_size), 2)
+        self.fc = nn.Linear(filters_num * len(filter_size), 2)
         # self.fc1 = nn.Linear(filters_num * len(filter_size), 512)
         # self.fc2 = nn.Linear(512, 128)
         # self.fc3 = nn.Linear(128, 2)
-        self.fc1 = nn.Sequential(
-            nn.Linear(filters_num * len(filter_size), 512),
-            nn.ReLU(),
-            nn.Dropout(0.5)  # Dropout after fc1
-        )
-        self.fc2 = nn.Sequential(
-            nn.Linear(512, 128),
-            nn.ReLU(),
-            nn.Dropout(0.5)  # Dropout after fc2
-        )
-        self.fc3 = nn.Linear(128, 2)
+        # self.fc1 = nn.Sequential(
+        #     nn.Linear(filters_num * len(filter_size), 512),
+        #     nn.ReLU(),
+        #     nn.Dropout(0.5)  # Dropout after fc1
+        # )
+        # self.fc2 = nn.Sequential(
+        #     nn.Linear(512, 128),
+        #     nn.ReLU(),
+        #     nn.Dropout(0.5)  # Dropout after fc2
+        # )
+        # self.fc3 = nn.Linear(128, 2)
 
     def forward(self, x):
         '''
@@ -78,10 +78,10 @@ class TextCNN(BasicModule):
         x = [F.max_pool1d(item, item.size(2)).squeeze(2) for item in x]
         x = torch.cat(x, 1)
         x = self.dropout(x)
-        # out = self.fc(x)
-        x = self.fc1(x)
-        x = self.fc2(x)
-        out = self.fc3(x)
+        out = self.fc(x)
+        # x = self.fc1(x)
+        # x = self.fc2(x)
+        # out = self.fc3(x)
         return out
 
 class LSTMModel(BasicModule):
@@ -323,9 +323,12 @@ def train(model, batch_size, lr, epochs, device, trainloader, validateloader):
         if validate_acc > best_val:
             print("validate_acc")
             print(validate_acc)
-            print("==============")
             model.save(path)
             best_val = validate_acc
+        else :
+            print("Best validate acc")
+            print(best_val)
+        print("==============")
 
 
     #step5: 返回模型用于测试
@@ -399,7 +402,7 @@ if __name__ == "__main__":
     batch_size = 128
     # batch_size = 256
     lr = args.lr
-    epochs = 10
+    epochs = 50
     embedding_dim = 50
     vocab_size = 57080
     # hidden_dim = 256
@@ -428,7 +431,7 @@ if __name__ == "__main__":
 
     #step2: 建立模型
     # lstmmodel = LSTMModel(embedding_dim, hidden_dim, pre_weight=word2vecs)
-    textcnnmodel = TextCNN(vocab_size, embedding_dim, filters_num=128, filter_size=[1,2,3,4,5,6,7,8], pre_weight=word2vecs)
+    textcnnmodel = TextCNN(vocab_size, embedding_dim, filters_num=128, filter_size=[2,3,4,5], pre_weight=word2vecs)
 
     # #step3: 设置tensorboard可视化参数
     # visdir = time.strftime('assets/visualize/' + lstmmodel.modelName + '_%m%d_%H_%M')
