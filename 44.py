@@ -51,7 +51,13 @@ class TextCNN(BasicModule):
         self.convs = nn.ModuleList(
             [nn.Conv2d(1, filters_num, (size, embedding_dim)) for size in filter_size])
         self.dropout = nn.Dropout(0.5)
-        self.fc = nn.Linear(filters_num * len(filter_size), 2)
+        # self.fc = nn.Linear(filters_num * len(filter_size), 2)
+        self.fc = nn.Sequential(
+            nn.Linear(filters_num * len(filter_size), 128),
+            nn.ReLU(),
+            nn.Dropout(0.5),
+            nn.Linear(128, 2)
+        )
         # self.fc1 = nn.Linear(filters_num * len(filter_size), 512)
         # self.fc2 = nn.Linear(512, 128)
         # self.fc3 = nn.Linear(128, 2)
@@ -402,7 +408,7 @@ if __name__ == "__main__":
     batch_size = 128
     # batch_size = 256
     lr = args.lr
-    epochs = 100
+    epochs = 5
     embedding_dim = 50
     vocab_size = 57080
     hidden_dim = 1024
@@ -442,8 +448,12 @@ if __name__ == "__main__":
     text_trainedmodel = train(textcnnmodel, batch_size, lr, epochs, device, trainloader, validateloader)
     # lstm_trainedmodel = train(lstmmodel, batch_size, lr, epochs, device, trainloader, validateloader)
 
+    # 加载valid上最优模型
+    path = "/Users/cglin/Desktop/output/4/models/save.bin"
+    test_model = TextCNN(vocab_size, embedding_dim, filters_num=128, filter_size=[2,3,4,5], pre_weight=word2vecs)
+    test_model.load_state_dict(torch.load(args.path, map_location="cpu"), strict=False)
     #step4: 测试模型
-    text_testacc = test(text_trainedmodel, device, testloader)
+    text_testacc = test(test_model, device, testloader)
     # lstm_testacc = test(lstm_trainedmodel, device, testloader)
 
 
