@@ -405,9 +405,8 @@ if __name__ == "__main__":
     epochs = 100
     embedding_dim = 50
     vocab_size = 57080
-    # hidden_dim = 256
-    hidden_dim = 1024
-    # hidden_dim = 512
+    # hidden_dim = 1024
+    hidden_dim = 512
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     trainpath = r'/Users/cglin/Desktop/data/4/train.txt'
     validatepath = r'/Users/cglin/Desktop/data/4/validation.txt'
